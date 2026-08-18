@@ -2,31 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public static $products = [
-        ["id"=>"1", "name"=>"TV", "description"=>"Best TV"],
-        ["id"=>"2", "name"=>"iPhone", "description"=>"Best iPhone"],
-        ["id"=>"3", "name"=>"Chromecast", "description"=>"Best Chromecast"],
-        ["id"=>"4", "name"=>"Glasses", "description"=>"Best Glasses"]
-    ];
-
     public function index(): View
     {
         $viewData = [];
         $viewData["title"] = "Products - Online Store";
         $viewData["subtitle"] =  "List of products";
-        $viewData["products"] = ProductController::$products;
+        $viewData["products"] = Product::all();
         return view('product.index')->with("viewData", $viewData);
     }
 
     public function show(string $id): View
     {
         $viewData = [];
-        $product = ProductController::$products[$id-1];
+        $product = Product::with('comments')->findOrFail($id);
         $viewData["title"] = $product["name"]." - Online Store";
         $viewData["subtitle"] =  $product["name"]." - Product information";
         $viewData["product"] = $product;
@@ -35,7 +29,7 @@ class ProductController extends Controller
 
     public function create(): View
     {
-        $viewData = []; //to be sent to the view
+        $viewData = [];
         $viewData["title"] = "Create product";
 
         return view('product.create')->with("viewData", $viewData);
@@ -43,11 +37,44 @@ class ProductController extends Controller
 
     public function save(Request $request)
     {
-        $request->validate([
+        $productData = $request->validate([
             "name" => "required",
-            "price" => "required"
+            "price" => "required|numeric|min:0",
+            "description" => "nullable|string",
         ]);
-        dd($request->all());
-        //here will be the code to call the model and save it to the database
+
+        Product::create($productData);
+
+        return redirect()->route('product.index');
+    }
+
+    public function edit(string $id): View
+    {
+        $viewData = [
+            "title" => "Edit product",
+            "product" => Product::findOrFail($id),
+        ];
+
+        return view('product.edit')->with("viewData", $viewData);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $productData = $request->validate([
+            "name" => "required",
+            "price" => "required|numeric|min:0",
+            "description" => "nullable|string",
+        ]);
+
+        Product::findOrFail($id)->update($productData);
+
+        return redirect()->route('product.show', ['id' => $id]);
+    }
+
+    public function destroy(string $id)
+    {
+        Product::findOrFail($id)->delete();
+
+        return redirect()->route('product.index');
     }
 }

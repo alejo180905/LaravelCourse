@@ -2,6 +2,9 @@
 @section('title', $viewData["title"])
 @section('subtitle', $viewData["subtitle"])
 @section('content')
+<div class="d-flex justify-content-end mb-3">
+  <a href="{{ route('product.create') }}" class="btn btn-primary">Create product</a>
+</div>
 <div class="row">
   @foreach ($viewData["products"] as $product)
   <div class="col-md-4 col-lg-3 mb-2">
@@ -10,6 +13,7 @@
       <div class="card-body text-center">
         <a href="{{ route('product.show', ['id'=> $product["id"]]) }}"
           class="btn bg-primary text-white">{{ $product["name"] }}</a>
+        <p class="card-text mt-2">${{ number_format($product["price"], 2) }}</p>
       </div>
     </div>
   </div>

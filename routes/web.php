@@ -1,20 +1,16 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', 'App\Http\Controllers\HomeController@index')->name("home.index");
-Route::get('/about', function () {
-    $data1 = "About us - Online Store";
-    $data2 = "About us";
-    $description = "This is an about page ...";
-    $author = "Developed by: Alejandro Correa";
-    return view('home.about')->with("title", $data1)
-      ->with("subtitle", $data2)
-      ->with("description", $description)
-      ->with("author", $author);
-})->name("home.about");
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
+Route::get('/about', [HomeController::class, 'about'])->name('home.about');
 
-Route::get('/products', 'App\Http\Controllers\ProductController@index')->name("product.index");
-Route::get('/products/create', 'App\Http\Controllers\ProductController@create')->name("product.create");
-Route::post('/products/save', 'App\Http\Controllers\ProductController@save')->name("product.save");
-Route::get('/products/{id}', 'App\Http\Controllers\ProductController@show')->name("product.show");
+Route::get('/products', [ProductController::class, 'index'])->name('product.index');
+Route::get('/products/create', [ProductController::class, 'create'])->name('product.create');
+Route::post('/products/save', [ProductController::class, 'save'])->name('product.save');
+Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
+Route::put('/products/{id}', [ProductController::class, 'update'])->name('product.update');
+Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.show');

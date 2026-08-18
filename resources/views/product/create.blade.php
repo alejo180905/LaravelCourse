@@ -19,6 +19,7 @@
               @csrf
               <input type="text" class="form-control mb-2" placeholder="Enter name" name="name" value="{{ old('name') }}" />
               <input type="text" class="form-control mb-2" placeholder="Enter price" name="price" value="{{ old('price') }}" />
+              <textarea class="form-control mb-2" placeholder="Enter description" name="description">{{ old('description') }}</textarea>
               <input type="submit" class="btn btn-primary" value="Send" />
             </form>
           </div>
